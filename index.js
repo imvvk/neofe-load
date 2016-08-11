@@ -198,7 +198,7 @@ function replaceVersion(manifest, module) {
   var static_src = Config.base + module;
   if (version) {
     static_src = static_src.replace(/\.(js|css)$/, function(all,$1) {
-      return "."+ version + $1;
+      return "@"+ version +"."+$1;
     });
   }
   return static_src; 
@@ -209,12 +209,14 @@ var Config = module.exports.Config = {
   base : "/"
 } 
 module.exports.loadModule = function loadModule(module, callback) {
-  var manifest = window.__Manifest__;
+  var manifest = window.__Manifest__ || {};
   var static_src = module;
   if (isArray(static_src)) {
     static_src = _map(module, function(m) {
       return replaceVersion(manifest, m);
     });
+  } else {
+    static_src = Config.base + module;
   }
   _load(static_src, callback);
 };
